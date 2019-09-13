@@ -5,7 +5,7 @@ galaxy_info:
   description: get SSL certificate via certbot
   license: license BSD
   min_ansible_version: 1.2
-  galaxy_tags: letsencript, certbot, ssl
+  galaxy_tags: ["letsencript", "certbot", "ssl"]
   platforms:
     - name: Ubuntu
       versions:

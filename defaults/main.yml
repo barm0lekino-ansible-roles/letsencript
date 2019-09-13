@@ -3,7 +3,6 @@
   domain_name: devops.rebrain.srwx.net
   nginx_root_directory: /var/www
   nginx_log_path: /var/log/nginx
-
   ###
   # SSL
   letsencrypt_enabled: 1
@@ -12,6 +11,4 @@
   le_ssl_dir:  /etc/letsencrypt/live
   le_root_directory: /var/www
   le_email: "bitrush@mail.ru"
-  domain_name: devops.rebrain.srwx.net
   vhosts: [myhost]
-

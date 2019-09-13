@@ -24,8 +24,8 @@
       remote_src: yes
     tags: le, move
 
-  - file: path=/etc/nginx/sites-enabled state=absent tags=le
-  - file: path=/etc/nginx/sites-enabled state=directory tags=le
+  - file: name=Remove sites-enabled folder path=/etc/nginx/sites-enabled state=absent tags=le
+  - file: name=Create sites-enabled folder path=/etc/nginx/sites-enabled state=directory tags=le
 
   # Создаём временный конфиг для получения сертификата
   - name: Create temp site conf
@@ -59,4 +59,4 @@
       remote_src: yes
     tags: le, move
   # Удаляем временную директорию
-  - file: path=/tmp/ans_nginx_conf state=absent tags=le
+  - file: name=Delete tmp folder path=/tmp/ans_nginx_conf state=absent tags=le
