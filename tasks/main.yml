@@ -1,0 +1,62 @@
+---
+  # Открываем 443 порт
+  - name: iptables HTTPS 443
+    iptables:
+      chain: INPUT
+      protocol: tcp
+      destination_port: 443
+      jump: ACCEPT
+    notify: save iptables
+    tags: ["nginx", "iptables", "nginx_iptables", "le"]
+
+  # Создаем директорию для временного перемещения фалйов конфигураций nginx
+  - name: сreate tmp directory
+    file:
+      path: /tmp/ans_nginx_conf
+      state: directory
+    tags: le
+
+  # Перемещаем конфиги...
+  - name: Copy nginx .conf files to temp
+    copy:
+      src: /etc/nginx/sites-enabled/
+      dest: /tmp/ans_nginx_conf/
+      remote_src: yes
+    tags: le, move
+
+  - file: path=/etc/nginx/sites-enabled state=absent tags=le
+  - file: path=/etc/nginx/sites-enabled state=directory tags=le
+
+  # Создаём временный конфиг для получения сертификата
+  - name: Create temp site conf
+    template:
+      src: cert_tmp.conf.j2
+      dest: /etc/nginx/sites-enabled/cert_tmp.conf
+      owner: root
+      group: root
+      mode: 0644
+    tags: le, ssl-cert
+    notify: Restart nginx
+
+  # Выполняем задачи получения сертификата
+  - name: include Letsencrypt tasks
+    include: le-cert.yml
+    when: (letsencrypt_enabled == 1)
+    tags: le, ssl-cert
+
+  # Удаляем временый конфиг
+  - name: Delete temp site conf
+    file:
+      path: /etc/nginx/sites-enabled/cert_tmp.conf
+      state: absent
+    tags: le, ssl-cert
+
+  # Возвращаем старые конфиги на место
+  - name: Copy nginx .conf files back to sites-enabled
+    copy:
+      src: /tmp/ans_nginx_conf/
+      dest: /etc/nginx/sites-enabled/
+      remote_src: yes
+    tags: le, move
+  # Удаляем временную директорию
+  - file: path=/tmp/ans_nginx_conf state=absent tags=le
