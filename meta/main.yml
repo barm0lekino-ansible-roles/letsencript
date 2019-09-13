@@ -1,18 +1,15 @@
 ---
 galaxy_info:
-  role_name: ngix
+  role_name: barm0leykin.letsencript
   author: barm0leykin
-  description: simple nginx role
+  description: get SSL certificate via certbot
   license: license BSD
   min_ansible_version: 1.2
-  galaxy_tags: [nginx]
+  galaxy_tags: letsencript, certbot, ssl
   platforms:
     - name: Ubuntu
       versions:
         - all
-    - name: RedHat
-      versions:
-        - all
 
 dependencies:
-  - role: common
+  - role: barm0leykin.common
