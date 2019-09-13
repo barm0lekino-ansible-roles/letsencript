@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: barm0leykin.letsencript
+  role_name: letsencript
   author: barm0leykin
   description: get SSL certificate via certbot
   license: license BSD
