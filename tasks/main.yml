@@ -47,6 +47,11 @@
     tags: le, ssl-cert
     notify: Restart nginx
 
+  - name: Reload nginx
+    service:
+      name: nginx
+      state: reloaded
+
   # Выполняем задачи получения сертификата
   - name: include Letsencrypt tasks
     include: le-cert.yml
@@ -73,3 +78,8 @@
       path: /tmp/ans_nginx_conf
       state: absent
     tags: le, move
+
+  - name: Reload nginx
+    service:
+      name: nginx
+      state: reloaded
