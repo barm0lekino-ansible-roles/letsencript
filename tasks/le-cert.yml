@@ -24,7 +24,7 @@
     #################################################################################
   - name: Check for certificate
     stat:
-      path: "{{ le_ssl_dir }}/{{ vhosts[0] }}.{{ domain_name }}/fullchain.pem"
+      path: "{{ le_ssl_dir }}/{{ hostname }}.{{ domain_name }}/fullchain.pem"
     register: stat_fullchain_pem
     tags: ["ssl-cert", "create-cert"]
 
@@ -37,7 +37,7 @@
     shell: certbot certonly --agree-tos -d {{ item }} --webroot -w {{ le_root_directory }} -m {{ le_email }} {% if le_dry_run %}--dry-run{% endif %}
     when: stat_fullchain_pem.stat.exists == 0
     with_items:
-      - "{{ vhosts }}.{{ domain_name }} "
+      - "{{ hostname }}.{{ domain_name }} "
     notify: Reload nginx
     tags: ["ssl-cert", "create-cert"]
 

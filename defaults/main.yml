@@ -1,14 +1,13 @@
 ---
-  website_name: mysite
-  domain_name: devops.rebrain.srwx.net
+  hostname: mysite
+  domain_name: domain.ru
   nginx_root_directory: /var/www
   nginx_log_path: /var/log/nginx
   ###
   # SSL
   letsencrypt_enabled: 1
-  obtain_cert: 1
+  #obtain_cert: 1
   le_dry_run: 0 # " --dry-run"
   le_ssl_dir:  /etc/letsencrypt/live
   le_root_directory: /var/www
   le_email: "bitrush@mail.ru"
-  vhosts: [myhost]

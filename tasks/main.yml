@@ -16,12 +16,12 @@
       state: directory
     tags: le
 
-  # Перемещаем конфиги...
+  # Временно перемещаем конфиги...
   - name: Copy nginx .conf files to temp
     copy:
       src: /etc/nginx/sites-enabled/
       dest: /tmp/ans_nginx_conf/
-      remote_src: yes
+      remote_src: yes # перемещение происходит на удаленной машине
     tags: le, move
 
   - name: Delete sites-enabled folder
@@ -45,7 +45,7 @@
       group: root
       mode: 0644
     tags: le, ssl-cert
-    notify: Restart nginx
+    #notify: Reload nginx
 
   - name: Reload nginx
     service:
