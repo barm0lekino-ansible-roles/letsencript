@@ -9,77 +9,15 @@
     notify: save iptables
     tags: ["nginx", "iptables", "nginx_iptables", "le"]
 
-  # Создаем директорию для временного перемещения фалйов конфигураций nginx
-  - name: сreate tmp directory
-    file:
-      path: /tmp/ans_nginx_conf
-      state: directory
-    tags: le
-
-  # Временно перемещаем конфиги...
-  - name: Copy nginx .conf files to temp
-    copy:
-      src: /etc/nginx/sites-enabled/
-      dest: /tmp/ans_nginx_conf/
-      remote_src: yes # перемещение происходит на удаленной машине
-    tags: le, move
-
-  - name: Delete sites-enabled folder
-    file:
-      path: /etc/nginx/sites-enabled
-      state: absent
-    tags: le, move
-
-  - name: Create sites-enabled folder
-    file:
-      path: /etc/nginx/sites-enabled
-      state: directory
-    tags: le, move
-
-  # Создаём временный конфиг для получения сертификата
-  - name: Create temp site conf
-    template:
-      src: cert_tmp.conf.j2
-      dest: /etc/nginx/sites-enabled/cert_tmp.conf
-      owner: root
-      group: root
-      mode: 0644
+  - name: Check exist certificate
+    stat: "path={{ le_ssl_dir }}/{{ hostname }}.{{ domain_name }}/cert.pem"
+    register: check_exist_cert_result
     tags: le, ssl-cert
-    #notify: Reload nginx
-
-  - name: Reload nginx
-    service:
-      name: nginx
-      state: reloaded
 
   # Выполняем задачи получения сертификата
   - name: include Letsencrypt tasks
-    include: le-cert.yml
-    when: (letsencrypt_enabled == 1)
+    include: getcert.yml
+    when:
+      (check_exist_cert_result.stat.exists == 0) or
+      ( le_force_renew == 1)
     tags: le, ssl-cert
-
-  # Удаляем временый конфиг
-  - name: Delete temp site conf
-    file:
-      path: /etc/nginx/sites-enabled/cert_tmp.conf
-      state: absent
-    tags: le, ssl-cert
-
-  # Возвращаем старые конфиги на место
-  - name: Copy nginx .conf files back to sites-enabled
-    copy:
-      src: /tmp/ans_nginx_conf/
-      dest: /etc/nginx/sites-enabled/
-      remote_src: yes
-    tags: le, move
-  # Удаляем временную директорию
-  - name: Delete tmp folder
-    file:
-      path: /tmp/ans_nginx_conf
-      state: absent
-    tags: le, move
-
-  - name: Reload nginx
-    service:
-      name: nginx
-      state: reloaded

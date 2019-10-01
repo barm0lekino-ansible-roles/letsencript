@@ -5,9 +5,10 @@
   nginx_log_path: /var/log/nginx
   ###
   # SSL
-  letsencrypt_enabled: 1
-  #obtain_cert: 1
-  le_dry_run: 0 # " --dry-run"
+  use_ssl: yes
+  letsencrypt_enabled: yes
+  le_dry_run: no # " --dry-run"
+  le_force_renew: no
   le_ssl_dir:  /etc/letsencrypt/live
   le_root_directory: /var/www
   le_email: "bitrush@mail.ru"
